@@ -28,7 +28,6 @@ def process(data):
     pe_count, doc, rec_script = summarizer.prepro(data)
 
     # 키워드 생성
-    print(''.join(doc))
     keyword = summarizer.mmr(''.join(doc))
 
     # 그래프 생성
@@ -50,7 +49,6 @@ def render_file():
         data = []
         #print(f'data: {data}')
         print('리퀘스트를 받았습니다.')
-        print(req)
         for i in req['conversation'][0]:
             data.append([f'{i["name"]}:{i["text"]}', i["time"]])
 
