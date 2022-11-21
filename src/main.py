@@ -28,6 +28,7 @@ def process(data):
     pe_count, doc, rec_script = summarizer.prepro(data)
 
     # 키워드 생성
+    print(''.join(doc))
     keyword = summarizer.mmr(''.join(doc))
 
     # 그래프 생성
