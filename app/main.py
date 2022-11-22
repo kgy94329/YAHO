@@ -40,17 +40,20 @@ def meeting_process(data):
 
     # 그래프 생성
     gd.draw(pe_count.values(), pe_count.keys())
-    img = cv2.imread('1.png', cv2.IMREAD_COLOR)
-    img = cv2.resize(img, (120, 120))
-    _, img = cv2.imencode('.png', img)
-    img = base64.encodebytes(img).decode('utf-8')
-
+    img = get_graph()
     # 요약문 생성
     summary = summarizer.get_summary(keyword, doc)
     return img, rec_script, keyword, summary
 
+def get_graph():
+    img = cv2.imread('1.png', cv2.IMREAD_COLOR)
+    img = cv2.resize(img)
+    _, img = cv2.imencode('.png', img)
+    img = base64.encodebytes(img).decode('utf-8')
+
 def daily_process(do, undo):
-    img = gd.draw([do, undo], ['Do', 'Undo'], wedgeprops=None)
+    gd.draw([do, undo], ['Do', 'Undo'], wedgeprops=None)
+    img = get_graph()
     return img
 
 def decode_img(data):
