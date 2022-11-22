@@ -14,11 +14,8 @@
         1. 회의 대화 참여율 그래프 작성
 '''
 from flask import Flask , Response, request
-from collections import Counter
 import base64
-import requests
-import json
-import one_graph as og
+import graph_drawer as gd
 import summarize
 import jsonpickle
 import cv2
@@ -34,18 +31,16 @@ app = Flask(__name__)
 
 
 model_name = 'alaggung/bart-r3f'
-
 summarizer = summarize.summarize(model_name , model_name )
 
-def process(data):
-
+def meeting_process(data):
     pe_count, doc, rec_script = summarizer.prepro(data)
 
     # 키워드 생성
     keyword = summarizer.mmr(''.join(doc))
 
     # 그래프 생성
-    og.one_graph(pe_count.values(), pe_count.keys())
+    gd.draw(pe_count.values(), pe_count.keys())
     img = cv2.imread('1.png', cv2.IMREAD_COLOR)
     img = cv2.resize(img, (120, 120))
     _, img = cv2.imencode('.png', img)
@@ -54,25 +49,46 @@ def process(data):
     # 요약문 생성
     summary = summarizer.get_summary(keyword, doc)
     return img, rec_script, keyword, summary
-    
 
-@app.route('/summarize', methods=['POST'])
+def daily_process(do, undo):
+    img = gd.draw([do, undo], ['Do', 'Undo'], wedgeprops=None)
+    return img
+
+
+@app.route('/meeting', methods=['POST'])
 def render_file():
-    global cnt, date, data
     if request.method == 'POST':
         req = request.get_json()
         data = []
-        #print(f'data: {data}')
+
         print('리퀘스트를 받았습니다.')
         for i in req['conversation'][0]:
             data.append([f'{i["name"]}:{i["text"]}', i["time"]])
 
-        img, rec_script, keyword, summary = process(data)
-        print('response를 보냅니다.')
+        img, rec_script, keyword, summary = meeting_process(data)
+        
         # response 생성
         response = {"graph":img, "record":rec_script, "keyword":keyword, "summary":summary}
         response = jsonpickle.encode(response)
+        print('response를 보냅니다.')
+        return Response(response=response , status = 200 , mimetype='application/json')
+    return 'Got wrong request' 
 
+@app.route('/daily', methods=['POST'])
+def render_file():
+    if request.method == 'POST':
+        req = request.get_json()
+
+        print('리퀘스트를 받았습니다.')
+        do = req['do']
+        undo = req['undo']
+
+        img = daily_process(do, undo)
+        
+        # response 생성
+        response = {"graph":img}
+        response = jsonpickle.encode(response)
+        print('response를 보냅니다.')
         return Response(response=response , status = 200 , mimetype='application/json')
     return 'Got wrong request' 
 

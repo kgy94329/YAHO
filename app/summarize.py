@@ -4,9 +4,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer
 from collections import Counter
-import itertools
 import numpy as np
-import re
 
 class summarize:
     def __init__(self, model_name, tokenizer_name):
@@ -160,7 +158,6 @@ class summarize:
         similarity.sort(reverse=True, key=lambda x: x[1])
         for text, _ in similarity[:n_top]:
             summary.append(text)
-            #summary.append(self.inference(text))
         
         return summary
 
