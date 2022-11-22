@@ -1,17 +1,17 @@
 '''
-File: main.py
-Author: Guyong Kwon, Hangyul Lee
-Date: 2022-11-21
-Note:
-    서버로부터 데이터를 받아 AI처리를 수행하는 모듈
-    AI기능
-    1. 회의 대화 내용 데이터로부터 키워드 추출
-    2. 추출된 키워드를 활용하여 추출요약 진행
-    3. 입력받은 유저 사진 이미지가 정면인지 측면인지 체크
-    4. 1분마다 한 장의 사진을 입력받고 유저가 있는지 없는지 체크
+    File: main.py
+    Author: Guyong Kwon, Hangyul Lee
+    Date: 2022-11-21
+    Note:
+        서버로부터 데이터를 받아 AI처리를 수행하는 모듈
+        AI기능
+        1. 회의 대화 내용 데이터로부터 키워드 추출
+        2. 추출된 키워드를 활용하여 추출요약 진행
+        3. 입력받은 유저 사진 이미지가 정면인지 측면인지 체크
+        4. 1분마다 한 장의 사진을 입력받고 유저가 있는지 없는지 체크
 
-    그 외 기능
-    1. 회의 대화 참여율 그래프 작성
+        그 외 기능
+        1. 회의 대화 참여율 그래프 작성
 '''
 from flask import Flask , Response, request
 from collections import Counter
