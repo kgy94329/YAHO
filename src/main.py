@@ -64,14 +64,13 @@ def render_file():
         data = []
         #print(f'data: {data}')
         print('리퀘스트를 받았습니다.')
-        
-        for i in req['conversation']:
-            data.append([f'{i["name"]}:{i["data"]}', i["time"]])
+        for i in req['conversation'][0]:
+            data.append([f'{i["name"]}:{i["text"]}', i["time"]])
 
         img, rec_script, keyword, summary = process(data)
         print('response를 보냅니다.')
         # response 생성
-        response = {"graph":img, "data":rec_script, "keyword":keyword, "summary":summary}
+        response = {"graph":img, "record":rec_script, "keyword":keyword, "summary":summary}
         response = jsonpickle.encode(response)
 
         return Response(response=response , status = 200 , mimetype='application/json')
