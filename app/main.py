@@ -35,14 +35,13 @@ summarizer = summarize.summarize(model_name , model_name )
 
 def meeting_process(data):
     pe_count, doc, rec_script = summarizer.prepro(data)
-
+    
     # 키워드 생성
     keyword = summarizer.mmr(''.join(doc))
-
+    
     # 그래프 생성
     gd.draw(pe_count.values(), pe_count.keys())
     img = cv2.imread('1.png', cv2.IMREAD_COLOR)
-    img = cv2.resize(img, (120, 120))
     _, img = cv2.imencode('.png', img)
     img = base64.encodebytes(img).decode('utf-8')
 
@@ -56,11 +55,10 @@ def daily_process(do, undo):
 
 
 @app.route('/meeting', methods=['POST'])
-def render_file():
+def meeting_data():
     if request.method == 'POST':
         req = request.get_json()
         data = []
-
         print('리퀘스트를 받았습니다.')
         for i in req['conversation'][0]:
             data.append([f'{i["name"]}:{i["text"]}', i["time"]])
@@ -75,7 +73,7 @@ def render_file():
     return 'Got wrong request' 
 
 @app.route('/daily', methods=['POST'])
-def render_file():
+def daily_data():
     if request.method == 'POST':
         req = request.get_json()
 
