@@ -15,20 +15,19 @@
 '''
 from flask import Flask , Response, request
 import base64
+import numpy as np
 import graph_drawer as gd
+import face_detector
 import summarize
 import jsonpickle
 import cv2
-
 
 ## GET : 자료를 요청할 때 사용.
 ## POST : 자료를 생성을 요청할 때 사용.
 ## PUT : 자료의 수정을 요청할 때 사용.
 ## DELETE : 자료의 삭제를 요청할 때 사용.
 
-
 app = Flask(__name__)
-
 
 model_name = 'alaggung/bart-r3f'
 summarizer = summarize.summarize(model_name , model_name )
@@ -53,6 +52,11 @@ def daily_process(do, undo):
     img = gd.draw([do, undo], ['Do', 'Undo'], wedgeprops=None)
     return img
 
+def decode_img(data):
+    img = base64.b64decode(data)
+    nparr = np.fromstring(img, dtype=np.uint8)
+    img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    return img
 
 @app.route('/meeting', methods=['POST'])
 def meeting_data():
@@ -89,6 +93,37 @@ def daily_data():
         print('response를 보냅니다.')
         return Response(response=response , status = 200 , mimetype='application/json')
     return 'Got wrong request' 
+
+@app.route('/facedetect', methods=['POST'])
+def detect():
+    if request.method == 'POST':
+        req = request.get_json()
+
+        print('리퀘스트를 받았습니다.')
+        target = req['img']
+        img = decode_img(target)
+        embedding = req['embd']
+
+        result = face_detector.check_image(img, embedding)
+        return result
+
+@app.route('/newface', methods=['POST'])
+def face_data():
+    if request.method == 'POST':
+        req = request.get_json()
+
+        print('리퀘스트를 받았습니다.')
+        check = req['text']
+        img_code = req['img']
+        img = decode_img(img_code)
+        
+        result, embedding_list = face_detector.make_base_image(check, img)
+        if embedding_list != None:
+            response = {'result':result, 'embd':embedding_list}
+            response = jsonpickle.encode(response)
+            return Response(response=response , status = 200 , mimetype='application/json')
+        else:
+            return result
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0' , port = 9090)
