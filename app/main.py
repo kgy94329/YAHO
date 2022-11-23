@@ -50,9 +50,9 @@ def get_graph(status="normal"):
     # 정상적인 그래프가 출력되지 않으면 no_graph이미지를 생성
     # 생성된 이미지를 base64로 인코딩하여 전송
     if status == "normal":
-        img = cv2.imread('1.png', cv2.IMREAD_COLOR)
+        img = cv2.imread('../data/images/1.png', cv2.IMREAD_COLOR)
     else:
-        img = cv2.imread('no_graph.png', cv2.IMREAD_COLOR)
+        img = cv2.imread('../data/images/no_graph.png', cv2.IMREAD_COLOR)
         
     _, img = cv2.imencode('.png', img)
     img = base64.encodebytes(img).decode('utf-8')
