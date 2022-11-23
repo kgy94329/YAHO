@@ -10,11 +10,10 @@ def cos_sim(A, B):
 
 
 def make_base_image(check, image):
-    app = FaceAnalysis(providers=[ 'CPUExecutionProvider']) #'CUDAExecutionProvider',
+    app = FaceAnalysis(providers=['CPUExecutionProvider']) #'CUDAExecutionProvider',
     app.prepare(ctx_id=0, det_size=(640, 640))
 
     embeddings_list = list()
-    face_landmark_list = list()
 
     image = cv2.resize(image , (640,640))
     image =  cv2.flip(image, 1)
@@ -23,19 +22,19 @@ def make_base_image(check, image):
     
     # rimg = app.draw_on(image, faces)
 
-    face_landmark_list.append(faces[0]['landmark_2d_106'])
-    eye_euclidean = distance.euclidean(face_landmark_list[-1][38] , face_landmark_list[-1][88])
+    face_landmark_list = faces[0]['landmark_2d_106']
+    eye_euclidean = distance.euclidean(face_landmark_list[38] , face_landmark_list[88])
     
-    if face_landmark_list[0][86][0] < face_landmark_list[-1][86][0] and eye_euclidean < 50: 
+    if face_landmark_list[72][0] + 9 <= face_landmark_list[86][0] and eye_euclidean < 80: 
         embeddings_list.append(faces[0]['embedding'])
         result = 'right'
-    elif face_landmark_list[0][86][0] > face_landmark_list[-1][86][0] and eye_euclidean < 50:
+    elif face_landmark_list[72][0] >= face_landmark_list[86][0] + 9 and eye_euclidean < 80:
         embeddings_list.append(faces[0]['embedding'])
         result = 'left'
     else:
         embeddings_list.append(faces[0]['embedding'])
         result = 'front'
-
+    
     if check == result:
         return result, embeddings_list
     else:
