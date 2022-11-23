@@ -14,6 +14,7 @@
         1. 회의 대화 참여율 그래프 작성
 '''
 from flask import Flask , Response, request
+from PIL import Image
 import base64
 import numpy as np
 import graph_drawer as gd
@@ -21,6 +22,7 @@ import face_detector
 import summarize
 import jsonpickle
 import cv2
+import time
 
 ## GET : 자료를 요청할 때 사용.
 ## POST : 자료를 생성을 요청할 때 사용.
@@ -124,20 +126,27 @@ def detect():
 @app.route('/newface', methods=['POST'])
 def face_data():
     if request.method == 'POST':
-        req = request.get_json()
-
+        start = time.time()        
         print('리퀘스트를 받았습니다.')
-        check = req['text'][0]
-        img_code = req['img'][0]
-        img = decode_img(img_code)
+        check = request.form['faceType']
+        img_code = request.files['image']
+        img = Image.open(img_code)
+        img = np.array(img)
+        img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+        #nparr = np.fromstring(img_code, dtype=np.uint8)
+        #img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         
         result, embedding_list = face_detector.make_base_image(check, img)
+        end = time.time()
+        print(f'{end - start:.5f}초 경과했습니다.')
         if embedding_list != None:
-            response = {'result':result, 'embd':embedding_list}
+            response = {'faceType':result, 'embd':embedding_list}
             response = jsonpickle.encode(response)
             return Response(response=response , status = 200 , mimetype='application/json')
         else:
-            return result
+            response = {'faceType':result, 'embd':None}
+            response = jsonpickle.encode(response)
+            return Response(response=response , status = 200 , mimetype='application/json')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0' , port = 9090)

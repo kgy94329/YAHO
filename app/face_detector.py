@@ -19,7 +19,8 @@ def make_base_image(check, image):
     image =  cv2.flip(image, 1)
 
     faces = app.get(image , max_num=1)
-    
+    if len(faces) == 0:
+        return result, None
     # rimg = app.draw_on(image, faces)
 
     face_landmark_list = faces[0]['landmark_2d_106']
