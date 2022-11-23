@@ -46,18 +46,25 @@ def meeting_process(data):
     summary = summarizer.get_summary(keyword, doc)
     return img, rec_script, keyword, summary
 
-def get_graph():
-    img = cv2.imread('1.png', cv2.IMREAD_COLOR)
+def get_graph(status="normal"):
+    # 정상적인 그래프가 출력되지 않으면 no_graph이미지를 생성
+    # 생성된 이미지를 base64로 인코딩하여 전송
+    if status == "normal":
+        img = cv2.imread('1.png', cv2.IMREAD_COLOR)
+    else:
+        img = cv2.imread('no_graph.png', cv2.IMREAD_COLOR)
+        
     _, img = cv2.imencode('.png', img)
     img = base64.encodebytes(img).decode('utf-8')
     return img
 
-def daily_process(do, undo):
-    gd.draw([do, undo], ['Do', 'Undo'], wedgeprops=None)
+def daily_process(do,undo, labels=['Do', 'Undo']):
+    gd.draw([do, undo], labels, wedgeprops=None)
     img = get_graph()
     return img
 
 def decode_img(data):
+    # 전송받은 이미지를 디코딩
     img = base64.b64decode(data)
     nparr = np.fromstring(img, dtype=np.uint8)
     img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
@@ -87,10 +94,12 @@ def daily_data():
         req = request.get_json()
 
         print('리퀘스트를 받았습니다.')
-        checkCount = req['checkCount']
-        totalCount = req['totalCount']
-
-        img = daily_process(checkCount, (totalCount - checkCount))
+        checkCount = req['checkCount'][0]
+        totalCount = req['totalCount'][0]
+        if totalCount == checkCount and chechCount == 0:
+            img = get_graph('no_graph')
+        else:
+            img = daily_process(checkCount, (totalCount - checkCount))
         
         # response 생성
         response = {"graph":img}
@@ -105,9 +114,9 @@ def detect():
         req = request.get_json()
 
         print('리퀘스트를 받았습니다.')
-        target = req['img']
+        target = req['img'][0]
         img = decode_img(target)
-        embedding = req['embd']
+        embedding = req['embd'][0]
 
         result = face_detector.check_image(img, embedding)
         return result
@@ -118,8 +127,8 @@ def face_data():
         req = request.get_json()
 
         print('리퀘스트를 받았습니다.')
-        check = req['text']
-        img_code = req['img']
+        check = req['text'][0]
+        img_code = req['img'][0]
         img = decode_img(img_code)
         
         result, embedding_list = face_detector.make_base_image(check, img)
