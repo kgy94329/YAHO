@@ -87,10 +87,10 @@ def daily_data():
         req = request.get_json()
 
         print('리퀘스트를 받았습니다.')
-        do = req['do']
-        undo = req['undo']
+        checkCount = req['checkCount']
+        totalCount = req['totalCount']
 
-        img = daily_process(do, undo)
+        img = daily_process(checkCount, (totalCount - checkCount))
         
         # response 생성
         response = {"graph":img}

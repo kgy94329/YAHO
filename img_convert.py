@@ -23,7 +23,9 @@ while True:
         data = {"text":"right", "img":img_code}
         content_type = 'application/json'
         headers = {'content-type': content_type, 'charset':'utf-8'}
-        json.dumps(data)
-        requests.post('http://34.64.197.102:9090/newface', data = data, headers=headers)
+        data = json.dumps(data)
+
+        response = requests.post('http://34.64.197.102:9090/newface', data = data, headers=headers)
+        print(response.text)
     if order == 27:
         break
