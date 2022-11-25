@@ -21,8 +21,11 @@ import graph_drawer as gd
 import face_detector
 import summarize
 import jsonpickle
+import json
 import cv2
 import time
+import io
+import binascii
 
 ## GET : 자료를 요청할 때 사용.
 ## POST : 자료를 생성을 요청할 때 사용.
@@ -108,44 +111,55 @@ def daily_data():
         response = jsonpickle.encode(response)
         print('response를 보냅니다.')
         return Response(response=response , status = 200 , mimetype='application/json')
-    return 'Got wrong request' 
+    return 'Got wrong request'
 
 @app.route('/facedetect', methods=['POST'])
 def detect():
     if request.method == 'POST':
+        start = time.time()
         req = request.get_json()
 
         print('리퀘스트를 받았습니다.')
-        target = req['img'][0]
+        target = req['image'][0]
         img = decode_img(target)
-        embedding = req['embd'][0]
 
-        result = face_detector.check_image(img, embedding)
+
+        # base85로 인코딩한 임베딩을 다시 디코딩
+        embedding = request.form['embd']
+        embedding = base64.b85decode(embedding)
+        embedding = np.frombuffer(embedding, dtype=np.float32)
+        result = face_detector.check_image(image, [embedding])
+        end = time.time()
+        print(f'{end - start:.5f}초 경과했습니다.')
         return result
 
 @app.route('/newface', methods=['POST'])
 def face_data():
     if request.method == 'POST':
-        start = time.time()        
+        start = time.time()    
+
         print('리퀘스트를 받았습니다.')
-        check = request.form['faceType']
-        img_code = request.files['image']
-        img = Image.open(img_code)
-        img = np.array(img)
-        img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-        #nparr = np.fromstring(img_code, dtype=np.uint8)
-        #img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        req = request.get_json()
         
-        result, embedding_list = face_detector.make_base_image(check, img)
+        faceType = req['faceType'][0]
+        image = req['image'][0]
+        img = decode_img(image)
+        result, embedding_list = face_detector.make_base_image(faceType, img)
+
         end = time.time()
         print(f'{end - start:.5f}초 경과했습니다.')
-        if embedding_list != None:
-            response = {'faceType':result, 'embd':embedding_list}
-            response = jsonpickle.encode(response)
+
+        if embedding_list is None:
+            response = {'faceType':result, 'embd':None}
+            #response = jsonpickle.encode(response)
+            response = json.dumps(response)
             return Response(response=response , status = 200 , mimetype='application/json')
         else:
-            response = {'faceType':result, 'embd':None}
-            response = jsonpickle.encode(response)
+            byte_list = embedding_list.tobytes()
+            byte_list = base64.b85encode(byte_list).decode()
+            response = {'faceType':result, 'embd':byte_list}
+            #response = jsonpickle.encode(response)
+            response = json.dumps(response)
             return Response(response=response , status = 200 , mimetype='application/json')
 
 if __name__ == '__main__':
