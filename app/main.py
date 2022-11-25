@@ -101,7 +101,7 @@ def daily_data():
         print('리퀘스트를 받았습니다.')
         checkCount = req['checkCount'][0]
         totalCount = req['totalCount'][0]
-        if totalCount == checkCount and chechCount == 0:
+        if totalCount == checkCount and checkCount == 0:
             img = get_graph('no_graph')
         else:
             img = daily_process(checkCount, (totalCount - checkCount))
