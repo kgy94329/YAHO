@@ -121,7 +121,7 @@ def detect():
 
         print('리퀘스트를 받았습니다.')
         target = req['detectFace'][0]
-        img = decode_img(target)
+        image = decode_img(target)
 
 
         # base85로 인코딩한 임베딩을 다시 디코딩
