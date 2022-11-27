@@ -33,5 +33,5 @@ def draw(ratio , labels , wedgeprops={'width': 0.7, 'edgecolor': 'w', 'linewidth
     # 그래프 생성
     eval(plt_result)
     plt.legend(labels, loc='lower center', ncol=len(labels))
-    fig.savefig(fname='1.png', bbox_inches='tight', pad_inches=0)
+    fig.savefig(fname='../data/images/1.png', bbox_inches='tight', pad_inches=0)
     print('그래프가 생성되었습니다.')
