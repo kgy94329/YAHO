@@ -8,7 +8,7 @@ rc('font', family='NanumGothic', size=17)
 # 그래프 그리기 명령어 생성 함수
 def create_command(wedgeprops, graph_type= 'pie'):
     if graph_type == 'pie':
-        base_code = 'plt.pie(x = ratio, autopct="%.1f%%", startangle=260, counterclock=False '
+        base_code = 'plt.pie(x = ratio, autopct="%.1f%%", startangle=260, counterclock=False, textprops={\'size\':30} '
         
         if wedgeprops != None:
             extra = f', wedgeprops = {wedgeprops}'
@@ -32,6 +32,6 @@ def draw(ratio , labels , wedgeprops={'width': 0.7, 'edgecolor': 'w', 'linewidth
 
     # 그래프 생성
     eval(plt_result)
-    plt.legend(labels, loc='lower center', ncol=len(labels))
-    fig.savefig(fname='1.png', bbox_inches='tight', pad_inches=0)
+    plt.legend(labels, loc='lower center', ncol=len(labels), fontsize=25)
+    fig.savefig(fname='../data/images/1.png', bbox_inches='tight', pad_inches=0)
     print('그래프가 생성되었습니다.')
