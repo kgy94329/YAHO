@@ -120,18 +120,24 @@ def detect():
         req = request.get_json()
 
         print('리퀘스트를 받았습니다.')
-        target = req['image'][0]
+        target = req['detectFace'][0]
         img = decode_img(target)
 
 
         # base85로 인코딩한 임베딩을 다시 디코딩
-        embedding = request.form['embd']
-        embedding = base64.b85decode(embedding)
-        embedding = np.frombuffer(embedding, dtype=np.float32)
-        result = face_detector.check_image(image, [embedding])
+        embedding = request.form['memberFaceList']
+        emb_data = []
+        print(embedding)
+        for embed in embedding:
+            temp = base64.b85decode(embedding)
+            emb_data.append(np.frombuffer(temp, dtype=np.float32))
+        result = face_detector.check_image(image, emb_data)
         end = time.time()
         print(f'{end - start:.5f}초 경과했습니다.')
-        return result
+        
+        response = {'checkFace':result}
+        response = json.dumps(response)
+        return Response(response=response, status = 200, mimetype='application/json')
 
 @app.route('/newface', methods=['POST'])
 def face_data():

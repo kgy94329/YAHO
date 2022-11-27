@@ -44,7 +44,7 @@ def check_image(img, embedding):
     app = FaceAnalysis(providers=['CPUExecutionProvider'])
     app.prepare(ctx_id=0, det_size=(640, 640))
     faces = app.get(img , max_num=3)
-    result = "0"
+    result = "False"
     print(len(faces))
     if len(faces) > 1:
         for face in faces:
@@ -52,13 +52,13 @@ def check_image(img, embedding):
             for i in embedding:
                 euclideans = cos_sim(target , i)
                 if euclideans >= 0.4:
-                    result = "1"
+                    result = "True"
                     break
     elif len(faces) == 1:
         target = faces[0]['embedding']
         for i in embedding:
             euclideans = cos_sim(target , i)
             if euclideans >= 0.4:
-                result = "1"
+                result = "True"
                 break
     return result
