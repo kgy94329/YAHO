@@ -20,8 +20,8 @@ namespace NaverAPI_Guide
             string lang = "Kor";    // 언어 코드 ( Kor, Jpn, Eng, Chn )
             string url = $"https://naveropenapi.apigw.ntruss.com/recog/v1/stt?lang={lang}";
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.Headers.Add("X-NCP-APIGW-API-KEY-ID", "q508pwz7zu");
-            request.Headers.Add("X-NCP-APIGW-API-KEY", "OvvUwV0qE6JqIWqt8XA6BnxPYuhCOjdud8NInUcW");
+            request.Headers.Add("X-NCP-APIGW-API-KEY-ID", "Naver API key ID");
+            request.Headers.Add("X-NCP-APIGW-API-KEY", "Naver API key");
             request.Method = "POST";
             request.ContentType = "application/octet-stream";
             request.ContentLength = fileData.Length;
