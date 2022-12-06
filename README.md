@@ -13,7 +13,13 @@
   3. 프로젝트 단위 별 미팅 히스토리 저장으로 follow-up 미팅의 경우 업무 시간 단축
   4. 팀 미팅 시 배정받은 업무를 토대로 개인 to-do 리스트를 세분화하고 개인의  
 일별/주별/월별 리포트를 통해 사용자의 성취감과 업무 능률 향상 기대  
-## 팀원 소개
-|TEAM GAO|
-|---|---|---|---|---|---|
-|[권구영](https://github.com/kgy94329/)|
+## 팀원 소개  
+|AI|AI|AI|NET|XR|XR|
+| :---: | :---: | :---: | :---: | :---: | :---: |
+|👑[권구영](https://github.com/kgy94329)|[김규영](https://github.com/qyeongkim)|[이한결](https://github.com/AIHanGyeol)|[노재원](https://github.com/NJWonE)|[나병한](https://github.com/svcbn)|[이예담](https://github.com/yelee12)|
+## 시스템 구상도
+![image](https://user-images.githubusercontent.com/58832219/205869539-147768c2-52e8-4c46-aa4f-e0c5852d8da0.png)
+## 스토리보드
+![image](https://user-images.githubusercontent.com/58832219/205870123-1e98cd2c-83d4-4ffa-92b2-7f0167593cbe.png)
+![image](https://user-images.githubusercontent.com/58832219/205870287-84893f54-c897-49ce-aac2-6a2575ac28d0.png)
+![image](https://user-images.githubusercontent.com/58832219/205870415-3c318784-b8b9-481a-98d7-45c82f88a4c5.png)
