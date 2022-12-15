@@ -1,3 +1,5 @@
+<p align="center"> <img src="https://user-images.githubusercontent.com/58832219/207885991-aedb5aa5-8db5-4de3-b941-79d07728b8f9.png"> </p>
+
 # YAHO (You Are in Home Office)
 ## 프로젝트 개요
 
@@ -66,15 +68,9 @@ AI 기술을 접목해 개인의 업무 효율 또한 높일 수 있는 환경�
 - __*GCP(Google Cloud Platform)의 Compute Engine 인스턴스에 AI 서버 구축*__
 
 
-## 프로젝트 주요 기능
+## 프로젝트 시연 영상
+[![image](https://user-images.githubusercontent.com/58832219/207887987-327f4c98-f3a8-418c-b81c-61020e4b335a.png)](https://www.youtube.com/watch?v=rkUnYZrmmXs)
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/534a92cf-c1fc-4957-8fd6-6001f107c1ad/Untitled.png)
-
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/db2da2a4-4918-4581-8bd3-126e537c18fc/Untitled.png)
-
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/4061c77c-28b9-4c4b-99c7-c438c459755c/Untitled.png)
-
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/27869508-f91b-4640-8a46-2dc8b63b5647/Untitled.png)
 
 ## 시스템 구상도
 ![image](https://user-images.githubusercontent.com/58832219/205869539-147768c2-52e8-4c46-aa4f-e0c5852d8da0.png)
