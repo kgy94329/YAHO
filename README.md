@@ -18,25 +18,53 @@
 | :---: | :---: | :---: | :---: | :---: | :---: |
 |👑[권구영](https://github.com/kgy94329)|[김규영](https://github.com/qyeongkim)|[이한결](https://github.com/AIHanGyeol)|[노재원](https://github.com/NJWonE)|[나병한](https://github.com/svcbn)|[이예담](https://github.com/yelee12)|
 ## 사용 기술(AI)
-### 1. Face recognition
-담당: [이한결](https://github.com/AIHanGyeol), [김규영](https://github.com/qyeongkim)  
+(이탤릭 볼드체는 제가 구현한 기능입니다.)
 
-* [InsightFace](https://github.com/deepinsight/insightface)모델을 활용한 얼굴 인식 적용  
-- 유저의 정면, 좌측면, 우측면 얼굴사진으로부터 특징벡터를 추출하고 데이터베이스에 저장
-    - 미간 좌표값과 코 끝의 좌표값을 이용하여 사진이 정면인지 측면인지 판별
-    - 정면 사진에서 추출한 특징벡터 하나만으로도 꽤 정확한 결과를 보여주지만 좀 더 확실한 결과를 얻기 위해 측면 사진을 추가로 등록
-- 1분에 한 번씩 유저의 사진을 촬영하고 얼굴 특징벡터를 추출하여 데이터베이스에 저장된 특징벡터와 코사인 유사도를 계산
-- 코사인 유사도가 0.4이상이면 본인이라고 볼 수 있다.
-### 2. Text Summarization
+### Speech to Text
+담당: [권구영](https://github.com/kgy94329), [이한결](https://github.com/AIHanGyeol)  
+- ************문제점************
+    - Kospeech라는 STT모델을 이용하기 위해 사전 학습된 모델을 활용하였으나 정확도가 너무 낮음
+    - 추가 학습을 위해 데이터를 수집하고 학습을 시도하였으나 학습에 필요한 리소스가 부족하여 다른 모델을 찾기로 함
+    - __*구글 클라우드의 Streaming STT 모델을 활용하기 위해 API key를 얻어서 Unity에 내장하였으나 한국어 모델은 화자가 말을 끊는 시점을 정확히 파악하지 못해 원활한 회의록을 얻기에 어려움이 있었음*__
+    - __*문제 해결을 위해 코드를 확인하고 구글의 도큐멘트를 확인하였으나 구글 모델 자체의 문제인것으로 확인되어 Naver STT API를 활용하기로 함*__
+- *__Naver가 제공하는 C#코드를 Unity에 내장시킴*__
+- 회의중 발화자는 마이크 on/off 버튼으로 자신의 발언을 녹음하고 녹음이 종료되면 Naver STT API로 전송되어 text 데이터를 받아온다.
+- 회의가 종료되면 수집된 text 데이터들을 시간순에 따라 재배열하여 회의록으로 저장한다.
+
+### 추출요약 기능
 담당: [권구영](https://github.com/kgy94329)  
-[참고문서]: [딥러닝과 Maximal Marginal Relevance를 이용한 2단계 문서 요약](http://koreascience.or.kr/article/CFKO201930060772845.pdf)
-* Konlpy의 Mecab을 활용하여 문서의 형태소를 분리하고 명사만을 추출
-* 추출된 명사를 Sci-kit learn의 CountVectorizer를 활용하여 핵심 키워드를 추출
-  * 중요 단어라고 판단되는 단어들이 중복되어 추출됨
-* MMR(Maximal Marginal Relevance)를 활용하여 문서와 유사하면서도 중복되지 않는 단어 후보들을 추출
-  * 문서 주제와 관련성이 높은 문장을 선택하면서도 이전에 선택된 문장들에 대한 유사도가 낮은  
-  문장을 선택하여 선택된 문장들간의 정보 중복 문제를 해결할 수 있는 기법
-* 문서의 문장마다 형태소를 분리하고 자카드 유사도를 활용하여 핵심 키워드가 많이 포함된 문장들을 추출
+[참고문서]: [딥러닝과 Maximal Marginal Relevance를 이용한 2단계 문서 요약](http://koreascience.or.kr/article/CFKO201930060772845.pdf)  
+- __*작성된 회의록을 Konlpy의 Mecab을 활용하여 형태소 단위로 분리*__
+- __*MMR(Maximal Marginal Relevance) 알고리즘을 활용하여 회의 주제와 관련성이 높으면서도 중복되지 않는 단어들을 추출*__
+- __*추출된 단어들과 자카드 유사도를 활용하여 회의록으로부터 중요 문장을 추출*__
+
+### 사용자 인식 기능
+담당: [이한결](https://github.com/AIHanGyeol), [김규영](https://github.com/qyeongkim)  
+- **문제점**
+    - __*유저가 현재 근무중인지 파악하기 위해 Object Detection모델인 YOLOv7을 학습시킴*__
+    - __*사람들 사진 약 900장의 데이터를 인터넷에서 크롤링하여 Roboflow에서 사람들의 얼굴을 디텍시키기 위한 전처리를 진행*__
+    - __*모델을 학습시키고 웹캠을 통해 얼굴을 탐지하는 테스트를 진행했을 때 얼굴을 잘 탐지하였으나, 유저 이외의 다른 사람들의 얼굴도 함께 탐지하여 유저가 아닌 다른 사람이 자리에 앉아 있어도 부재중 표시가 뜨지 않는 문제를 확인*__
+    - InsightFace 모델을 onnx로 만들어 Unity에 내장시키고자 하였으나, 추론 코드를 C#으로 옮기는 과정에서 실패
+- 얼굴 인식에 가장 높은 성능을 가지고 있고 별도의 학습 필요 없이 사전 학습된 모델을 활용한 InsightFace를 활용하기로 함
+- 유저의 정면 사진 1장을 가지고 테스트 하였을 때 좌, 우 사진을 입력해도 **0.5 이상의 유사도**를 도출하였고 다른 사람의 사진을 입력하면 **0.3 이하의 유사도**를 도출하는 것을 확인함
+- 웹캠을 활용하여 **실시간 인식**을 시도하였을 때 프레임은 **약 평균 25프레임**의 우수한 성능을 보여주었으나 Unity에서 실시간 웹캠을 켜두는 것은 클라이언트 부분에서 많은 리소스가 소모될것으로 생각되어 10초에 1장의 사진을 촬영하는것으로 AI결정함
+
+### AI 서버 운용
+- __*AWS EC2 인스턴스에 AI서버를 구축*__
+    - 요금 문제로 서버 종료
+- __*GCP(Google Cloud Platform)의 Compute Engine 인스턴스에 AI 서버 구축*__
+
+
+## 프로젝트 주요 기능
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/534a92cf-c1fc-4957-8fd6-6001f107c1ad/Untitled.png)
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/db2da2a4-4918-4581-8bd3-126e537c18fc/Untitled.png)
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/4061c77c-28b9-4c4b-99c7-c438c459755c/Untitled.png)
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/27869508-f91b-4640-8a46-2dc8b63b5647/Untitled.png)
+
 ## 시스템 구상도
 ![image](https://user-images.githubusercontent.com/58832219/205869539-147768c2-52e8-4c46-aa4f-e0c5852d8da0.png)
 ## 스토리보드
